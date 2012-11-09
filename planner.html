@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>howdrunkamI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="JQuery/jquery.mobile-1.1.0/jquery.mobile-1.1.0.min.css" />
+    <link rel="stylesheet" href="navbar.css" />
+    <script src="JQuery/jquery-1.7.2.min.js"></script>
+    <script src="JQuery/jquery.mobile-1.1.0/jquery.mobile-1.1.0.min.js"></script>
+    <script src="JS/extras.js"> </script>
+</head>
+<body>
+<!-- Start page -->
+<div data-role="page" id="planner" >
+
+    <div data-role="header" data-id="header3" data-position="fixed">
+        <h1>How Drunk am I</h1>
+        <a href="info.html" data-icon="info" class="ui-btn-right">Info</a>
+        <div data-role="navbar"  data-grid="c" class="nav-glyphish-example">
+            <ul>
+                <li><a href="main.html" id="beernavbar" data-icon="myapp-beer" >Drink</a></li>
+                <li><a href="promille.html"  id="bacnavbar" data-icon="myapp-bac" >BAC</a></li>
+                <li><a href="planner.html" id="plannernavbar" data-icon="myapp-planner-white" class="ui-btn-active ui-state-persist">Planner</a></li>
+                <li><a href="profile.html" id="profilenavbar" data-icon="myapp-profile">Profile</a></li>
+            </ul>
+        </div><!-- /navbar -->
+    </div><!-- /header -->
+
+    <div data-role="content">
+
+
+
+        <h3>Plan your drinking</h3>
+
+        <div class="ui-grid-a">
+
+
+
+            <div class="ui-block-a" style="height:120px">
+                <
+                <div class ="ui-input-text" style="width:15%">
+                    <label for="number">Sober in:</label>
+                    <input type="number" name="number" id="number" value="" min="0" max="24"   />
+                    hours
+                </div>
+            </div>
+            <div class="ui-block-b"><div class="ui-bar ui-bar-e" style="height:120px">Block B</div></div>
+        </div><!-- /grid-a -->
+
+
+        <fieldset class="ui-grid-a" data-theme="b">
+
+
+
+            <div class="ui-block-a" style="width:25%">
+
+                <button type="button">test</button>
+
+            </div>
+
+            <div class="ui-block-a" style="width:100%">
+
+                <button type="button">test</button>
+
+            </div>
+
+            <div class="ui-block-a" style="width:50%">
+
+                <button type="button">test</button>
+
+            </div>
+
+        </fieldset>
+
+
+
+
+
+
+
+
+
+    </div><!-- /content -->
+
+</div><!-- /page -->
+
+</body>
+
+</html>

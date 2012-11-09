@@ -1,0 +1,19 @@
+
+
+        .nav-glyphish-example .ui-btn .ui-btn-inner { padding-top: 40px !important; color: #aaaaaa !important;  }
+        .nav-glyphish-example .ui-btn-active {border-color: #000000 !important;}
+        .nav-glyphish-example .ui-btn-active .ui-btn-inner  { padding-top: 40px !important; background-color: #3c3c3c !important; color: #ffffff !important; }
+        .nav-glyphish-example .ui-btn .ui-icon { width: 30px!important; height: 30px!important; margin-left: -15px !important; box-shadow: none!important; -moz-box-shadow: none!important; -webkit-box-shadow: none!important; -webkit-border-radius: 0 !important; border-radius: 0 !important; }
+
+        .ui-icon-myapp-beer { background:  url("icons/88-beer-mug.png") 50% 50% no-repeat;  background-size: 22px 27px; }
+        .ui-icon-myapp-beer-white { background:  url("icons/88-beermug.png") 50% 50% no-repeat;  background-size: 22px 27px; }
+        .ui-icon-myapp-bac {background: url("icons/21-skull.png") 50% 50% no-repeat; background-size: 24px 22px;}
+        .ui-icon-myapp-bac-white {background: url("icons/21-skullwhite.png") 50% 50% no-repeat; background-size: 24px 22px;}
+
+        .ui-icon-myapp-profile {background: url("icons/111-user.png") 50% 50% no-repeat; background-size: 24px 22px;}
+        .ui-icon-myapp-profile-white {background: url("icons/09-chat2.png") 50% 50% no-repeat; background-size: 24px 22px;}
+
+        .ui-icon-myapp-planner {background: url("icons/34-coffee.png") 50% 50% no-repeat; background-size: 24px 22px;}
+        .ui-icon-myapp-planner-white {background: url("icons/34-coffeewhite.png") 50% 50% no-repeat; background-size: 24px 22px;}
+
+

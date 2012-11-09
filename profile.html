@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>howdrunkamI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="JQuery/jquery.mobile-1.1.0/jquery.mobile-1.1.0.min.css" />
+    <link rel="stylesheet" href="navbar.css" />
+    <script src="JQuery/jquery-1.7.2.min.js"></script>
+    <script src="JQuery/jquery.mobile-1.1.0/jquery.mobile-1.1.0.min.js"></script>
+    <script src="JS/extras.js"> </script>
+</head>
+<body>
+<!-- Start page -->
+<div data-role="page" id="profile" >
+
+    <div data-role="header" data-id="header4" data-position="fixed" >
+        <h1>How Drunk am I</h1>
+        <a href="info.html" data-icon="gear" class="ui-btn-right">Options</a>
+        <div data-role="navbar"  data-grid="c" class="nav-glyphish-example">
+            <ul>
+                <li><a href="main.html" id="beernavbar" data-icon="myapp-beer" >Drink</a></li>
+                <li><a href="promille.html"  id="bacnavbar" data-icon="myapp-bac" >BAC</a></li>
+                <li><a href="planner.html" id="plannernavbar" data-icon="myapp-planner">Planner</a></li>
+                <li><a href="profile.html" id="profilenavbar" data-icon="myapp-profile-white" class="ui-btn-active ui-state-persist">Profile</a></li>
+            </ul>
+        </div><!-- /navbar -->
+    </div><!-- /header -->
+
+    <div data-role="content">
+
+        <h3>Profile</h3>
+
+    <ul data-role="listview"   >
+            <li><a href="gender.html">
+                <img src="images/gender2.jpg" />
+                <h3>Gender</h3>
+                <p id="pTest">Male</p>
+            </a></li>
+            <li><a href="bodyweight.html">
+                <img src="images/bodyweight.jpg" />
+                <h3>Bodyweight</h3>
+                <p id="pWeight">80 kg</p>
+            </a></li>
+        <li><a href="history.html">
+            <img src="images/guinnesstory.jpg" />
+            <h3>Drunk history</h3>
+            <p>Your private history of getting drunk</p>
+        </a></li>
+        </ul>
+
+    </div><!-- /content -->
+
+</div><!-- /page -->
+
+</body>
+</html>
