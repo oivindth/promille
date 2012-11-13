@@ -26,8 +26,8 @@ var TimeHelper = {
 
 var Promille = {
 
-    CalculatePromille : function(timeSinceLastDrink, totalAlcoholConsumedInGrams, bodyWeight, sex) {
-        if (totalAlcoholConsumedInGrams == 0) return 0;
+    CalculatePromille : function(timeSinceLastDrink, alcoholConsumedInGrams, bodyWeight, sex) {
+        if (alcoholConsumedInGrams == 0) return 0;
         var fordelingavAlkohol = totalAlcoholConsumedInGrams / (bodyWeight*Promille.getPercentage(sex));
         return fordelingavAlkohol- (0.15*timeSinceLastDrink);
     },
@@ -41,18 +41,29 @@ var Promille = {
     CalculateGramsOfAlcohol : function (volume, strength) {
         var baseValue = 0.08; // 1% alkohol i 1 cl volum gir 0,08 gram alkohol
         return (baseValue*strength*volume)*100;
+    }, 
+    TimeUntilSober : function (alcoholConsumedInGrams, bodyWeight, gender, timeOfFirstDrink) {
+        var timeUntilSober = 0;
+        var A = alcoholConsumedInGrams; 
+        var M = bodyWeight;
+        var Cm = Promille.getPercentage(gender);
+        var TsInHours =  Promille.getDifference(Number(timeOfFirstDrink), now)/1000/60/60;
+        console.log("sup");
+        timeUntilSober = (A/ (M*Cm) - 0.15* TsInHours-0.2) / 0.15;
+        return timeUntilSober;
+        
     }
 
 };
 
-
+/*
 $(document).bind("mobileinit", function(){
 	  $.extend(  $.mobile , {
 		  defaultPageTransition: 'none',
 	  defaultDialogTransition: 'none'
 	  });
 	});
-
+*/
 
 $('#liquorDialog').live('pageinit', function(event) {
 // utregning av alkohol etc bør gjøres i main? bare lagre alcoholconsumed her i session?
@@ -137,6 +148,7 @@ $('#beerDialog').live('pageinit', function(event) {
         var difference = Promille.getDifference(timeOfFirstDrink, new Date().getTime());
 
         var strength = $('#slider-strength').slider().val();
+		
         var size =0.0;
         if ( $('#radio-choice-beer1').is(':checked') ) size = 0.33;
         if ( $('#radio-choice-beer2').is(':checked') ) size = 0.4;
@@ -197,18 +209,20 @@ $('#gender').live('pageinit', function(event) {
         if ($('#radio-choice-male').is(':checked'))
             localStorage.setItem('gender', genderEnum.MALE);
         else localStorage.setItem('gender', genderEnum.FEMALE);
-        /*
-        $('#radio-choice-male').change(function() {
-            localStorage.setItem('gender', "male");
-        });
-        */
         $.mobile.changePage("profile.html");
-
     });
 });
 
+
+//coffescript version
+//$('#profile').live 'pageinit', ->
+//	$('#pTest').text(localStorage.getItem('gender'));
+//	$('#pWeight').text(localStorage.getItem('bodyWeight'));
+		
+
+
 $('#profile').live( 'pageinit',function(event){
-    $('p#pTest').text(localStorage.getItem('gender'));
+    $('#pTest').text(localStorage.getItem('gender'));
     $('#pWeight').text(localStorage.getItem('bodyWeight'));
 });
 
@@ -226,141 +240,48 @@ $('#promille').live( 'pageinit',function(event){
     var promille = Promille.CalculatePromille(difference, consumed , localStorage.getItem('bodyWeight'), localStorage.getItem('gender'));
 
 
-    var xhourspromille =  $('#sliderHoursUntilSober').slider().val();
-    var ttt = xhourspromille*3600000;
-    var diffTest = Promille.getDifference(Number(sessionStorage.getItem('timeOfFirstDrink')), dateNow.getTime()+ ttt);
-    var promillx = Promille.CalculatePromille(diffTest, consumed , localStorage.getItem('bodyWeight'), localStorage.getItem('gender'));
+    var sliderHoursPromille =  $('#sliderHoursUntilSober').slider().val()*3600000;//ms
+  
+    var diffFirstDrinkAndSliderValue = Promille.getDifference(Number(sessionStorage.getItem('timeOfFirstDrink')), dateNow.getTime()+ sliderHoursPromille);
+    var promilleOfSlider = Promille.CalculatePromille(diffFirstDrinkAndSliderValue, consumed , localStorage.getItem('bodyWeight'), localStorage.getItem('gender'));
     $('#sliderHoursUntilSober').change(function() {
-        xhourspromille =  $('#sliderHoursUntilSober').slider().val();
-        ttt = xhourspromille*3600000;
-        diffTest = Promille.getDifference(Number(sessionStorage.getItem('timeOfFirstDrink')), new Date().getTime()+ ttt);
-        promillx = Promille.CalculatePromille(diffTest, consumed , localStorage.getItem('bodyWeight'), localStorage.getItem('gender'));
-        $('#promilleOneHour').text( "" + promillx.toFixed(2)+ " ..%");
+        sliderHoursPromille =  $('#sliderHoursUntilSober').slider().val()*3600000;//ms
+        diffFirstDrinkAndSliderValue = Promille.getDifference(Number(sessionStorage.getItem('timeOfFirstDrink')), new Date().getTime()+ sliderHoursPromille);
+        promilleOfSlider = Promille.CalculatePromille(diffFirstDrinkAndSliderValue, consumed , localStorage.getItem('bodyWeight'), localStorage.getItem('gender'));
+        $('#promilleSliderValue').text( "" + promilleOfSlider.toFixed(2)+ " ..%");
     });
 
     $('#currentPromille').text("" + promille.toFixed(2) + " %.");
-    $('#promilleOneHour').text( "" + promillx.toFixed(2)+ " ..%");
+    $('#promilleSliderValue').text( "" + promilleOfSlider.toFixed(2)+ " ..%");
 
-    var now = new Date().getTime();
-    var tempNow = new Date().getTime();
+    var timeUntilSober =0;
+    if (promille>0.2)
+        timeUntilSober = Promille.TimeUntilSober(consumed, localStorage.getItem('bodyWeight'), localStorage.getItem('gender'),Number (sessionStorage.getItem('timeOfFirstDrink'));
 
-
-	var timeUntilSober = 0;
-	// Beregne tid til edru uten å iterere. 
-	var A = sessionStorage.getItem('alcoholConsumed');
-	console.log("A " + A);
-	var M = localStorage.getItem('bodyWeight');
-	console.log("M " + M);
-	var Cm = Promille.getPercentage(localStorage.getItem('gender'));
-	console.log("Cm " + Cm);
-	var TsInHours =  Promille.getDifference(Number(sessionStorage.getItem('timeOfFirstDrink')), now)/1000/60/60;
-	console.log("TS " + TsInHours);
-	
-	if (promille > 0.2) {
-		  timeUntilSober = (A/ (M*Cm) 	 
-		- 0.15* TsInHours-0.2) / 0.15;
-	}
-
-    while (promille >0.2) {
-        now+= 300000; //increase with 5 minutes
-        difference = Promille.getDifference(Number(sessionStorage.getItem('timeOfFirstDrink')), now);
-        promille = Promille.CalculatePromille(difference, consumed , localStorage.getItem('bodyWeight'), localStorage.getItem('gender'));
-    }
-
-    var msUntilSober = now - tempNow;
-    var secondsUntilSober = msUntilSober/1000;
-
-    $('#soberInHours').text(""+ TimeHelper.convertSecondsToHoursMinutesAndSeconds(secondsUntilSober) + "bennys versjon: " + TimeHelper.convertSecondsToHoursMinutesAndSeconds(timeUntilSober*60*60) );
+    $('#soberInHours').text(" " + TimeHelper.convertSecondsToHoursMinutesAndSeconds(timeUntilSober*60*60) );
 
 });
 
 
-
-
-
-
-
-
 // JavaScript code for the main page
 	$('#main').live( 'pageinit',function(event){
+        alert("test");
 		//Initialize
         sessionStorage.setItem('alcoholConsumed',0);
         sessionStorage.setItem('promille', 0);
         sessionStorage.setItem('beerCount', 0);
-        sessionStorage.setItem('timeOfFirstDrink', new Date().getTime());
-		console.log(sessionStorage.getItem('timeOfFirstDrink')/1000/60/60);
 
+        //dette må fikses så det alltid ikke dafulter til dette.
         localStorage.setItem('gender', genderEnum.MALE);
         localStorage.setItem('bodyWeight', 75);
-
-
-
-
+    
         promille = Number  (sessionStorage.getItem('promille'));
 		// UPDATE BUTTON
 		$('#boozeButton').click(function() {
+            console.log("skjer det noe ");
+            alert("hei");
            sessionStorage.setItem('timeOfFirstDrink', new Date().getTime());
             $('#startedDrinking').text("Drinking started at: " + new Date().getDate()  + "/" + new Date().getMonth() + ": " + new Date().getHours()+":"+ new Date().getMinutes());
             $("#boozeButton").button('disable');
 		});
-/*
-        $('#beernavbar').click(function() {
-            $(this).attr('data-icon','myapp-beer-white');
-            $(this).children().children().next().removeClass('ui-icon-myapp-beer').addClass('ui-icon-myapp-beer-white');
-
-            $('#bacnavbar').attr('data-icon','myapp-bac');
-            $('#bacnavbar').children().children().next().removeClass('ui-icon-myapp-bac-white').addClass('ui-icon-myapp-bac');
-            $('#plannernavbar').attr('data-icon','myapp-planner');
-            $('#plannernavbar').children().children().next().removeClass('ui-icon-myapp-planner-white').addClass('ui-icon-myapp-planner');
-            $('#profilenavbar').attr('data-icon','myapp-profile');
-            $('#profilenavbar').children().children().next().removeClass('ui-icon-myapp-profile-white').addClass('ui-icon-myapp-profile');
-        });
-
-        $('#bacnavbar').click(function() {
-
-            $(this).attr('data-icon','myapp-bac-white');
-            $(this).children().children().next().removeClass('ui-icon-myapp-bac').addClass('ui-icon-myapp-bac-white');
-
-            $('#beernavbar').attr('data-icon','myapp-beer');
-            $('#beernavbar').children().children().next().removeClass('ui-icon-myapp-beer-white').addClass('ui-icon-myapp-beer');
-            $('#plannernavbar').attr('data-icon','myapp-planner');
-            $('#plannernavbar').children().children().next().removeClass('ui-icon-myapp-planner-white').addClass('ui-icon-myapp-planner');
-            $('#profilenavbar').attr('data-icon','myapp-profile');
-            $('#profilenavbar').children().children().next().removeClass('ui-icon-myapp-profile-white').addClass('ui-icon-myapp-profile');
-
-        });
-        $('#plannernavbar').click(function() {
-
-            $(this).attr('data-icon','myapp-planner-white');
-            $(this).children().children().next().removeClass('ui-icon-myapp-planner').addClass('ui-icon-myapp-planner-white');
-
-            $('#beernavbar').attr('data-icon','myapp-beer');
-            $('#beernavbar').children().children().next().removeClass('ui-icon-myapp-beer-white').addClass('ui-icon-myapp-beer');
-            $('#bacnavbar').attr('data-icon','myapp-bac');
-            $('#bacnavbar').children().children().next().removeClass('ui-icon-myapp-bac-white').addClass('ui-icon-myapp-bac');
-            $('#profilenavbar').attr('data-icon','myapp-profile');
-            $('#profilenavbar').children().children().next().removeClass('ui-icon-myapp-profile-white').addClass('ui-icon-myapp-profile');
-
-        });
-
-        $('#profilenavbar').click(function() {
-
-            $(this).attr('data-icon','myapp-profile-white');
-            $(this).children().children().next().removeClass('ui-icon-myapp-profile').addClass('ui-icon-myapp-profile-white');
-
-            $('#beernavbar').attr('data-icon','myapp-beer');
-            $('#beernavbar').children().children().next().removeClass('ui-icon-myapp-beer-white').addClass('ui-icon-myapp-beer');
-            $('#bacnavbar').attr('data-icon','myapp-bac');
-            $('#bacnavbar').children().children().next().removeClass('ui-icon-myapp-bac-white').addClass('ui-icon-myapp-bac');
-            $('#plannernavbar').attr('data-icon','myapp-planner');
-            $('#plannernavbar').children().children().next().removeClass('ui-icon-myapp-planner-white').addClass('ui-icon-myapp-planner');
-        });
-
-*/
-
     });
-
-function functionname()
-{
-
-}
