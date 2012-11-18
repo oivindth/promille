@@ -1,16 +1,16 @@
-genderEnum = {
+var genderEnum = {
     MALE : "Male",
     FEMALE : "Female"
 };
 
-hourToMilliSeconsEnum = {
+var hourToMilliSeconsEnum = {
     ONE : 3600000,
     TWO : 7200000
 };
 
 
 var TimeHelper = {
-    convertSecondsToHoursMinutesAndSeconds:function (seconds) {
+    convertSecondsToHoursMinutesAndSeconds : function (seconds) {
         var hours = seconds / 3600;
         var remainder = seconds % 3600;
         var minutes = remainder / 60;
@@ -26,9 +26,9 @@ var TimeHelper = {
 
 var Promille = {
 
-    CalculatePromille : function(timeSinceLastDrink, alcoholConsumedInGrams, bodyWeight, sex) {
-        if (alcoholConsumedInGrams == 0) return 0;
-        var fordelingavAlkohol = totalAlcoholConsumedInGrams / (bodyWeight*Promille.getPercentage(sex));
+    CalculatePromille : function (timeSinceLastDrink, alcoholConsumedInGrams, bodyWeight, sex) {
+        if (alcoholConsumedInGrams === 0) return 0;
+        var fordelingavAlkohol = alcoholConsumedInGrams / (bodyWeight*Promille.getPercentage(sex));
         return fordelingavAlkohol- (0.15*timeSinceLastDrink);
     },
     getPercentage : function(sex) {
@@ -43,13 +43,16 @@ var Promille = {
         return (baseValue*strength*volume)*100;
     }, 
     TimeUntilSober : function (alcoholConsumedInGrams, bodyWeight, gender, timeOfFirstDrink) {
+
         var timeUntilSober = 0;
         var A = alcoholConsumedInGrams; 
         var M = bodyWeight;
         var Cm = Promille.getPercentage(gender);
-        var TsInHours =  Promille.getDifference(Number(timeOfFirstDrink), now)/1000/60/60;
+        var now = sessionStorage.getItem('timeOfLastDrink');
+        var TsInHours =  (Promille.getDifference(timeOfFirstDrink, now))/(1000/60/60);
         console.log("sup");
         timeUntilSober = (A/ (M*Cm) - 0.15* TsInHours-0.2) / 0.15;
+        console.log("funker denna??");
         return timeUntilSober;
         
     }
@@ -140,6 +143,7 @@ $('#wineDialog').live('pageinit', function(event) {
 $('#beerDialog').live('pageinit', function(event) {
 
     $('#saveBeerButton').click(function() {
+        
         var promille = Number  (sessionStorage.getItem('promille'));
 
         var alcoholConsumed = Number ( sessionStorage.getItem('alcoholConsumed'));
@@ -158,14 +162,17 @@ $('#beerDialog').live('pageinit', function(event) {
 
         alcoholConsumed+= Promille.CalculateGramsOfAlcohol(size,strength);
         sessionStorage.setItem('alcoholConsumed', alcoholConsumed);
-
+         console.log(difference);
+         console.log(alcoholConsumed);
+         console.log(localStorage.getItem('bodyWeight'));
+         console.log(localStorage.getItem('gender'));
         promille = Promille.CalculatePromille(difference, alcoholConsumed, localStorage.getItem('bodyWeight'), localStorage.getItem('gender'));
-
         sessionStorage.setItem('promille', promille);
        //$('#promilleTextInput').val("" + promille.toFixed(2) + ".%");
         var beerCount = Number(sessionStorage.getItem('beerCount'));
         beerCount++;
         sessionStorage.setItem('beerCount', beerCount);
+        sessionStorage.setItem('timeOfLastDrink', new Date().getTime());
         var beerCountHistory = Number ( localStorage.getItem('beerCountHistory'));
         beerCountHistory++;
         localStorage.setItem('beerCountHistory', beerCountHistory);
@@ -226,12 +233,9 @@ $('#profile').live( 'pageinit',function(event){
     $('#pWeight').text(localStorage.getItem('bodyWeight'));
 });
 
-$('#planner').live('pageinit', function(event) {
 
-});
 
 $('#promille').live( 'pageinit',function(event){
-
     var dateNow = new Date();
     var consumed = Number (sessionStorage.getItem('alcoholConsumed'));
     var difference = Promille.getDifference(Number(sessionStorage.getItem('timeOfFirstDrink')), dateNow.getTime());
@@ -256,7 +260,7 @@ $('#promille').live( 'pageinit',function(event){
 
     var timeUntilSober =0;
     if (promille>0.2)
-        timeUntilSober = Promille.TimeUntilSober(consumed, localStorage.getItem('bodyWeight'), localStorage.getItem('gender'),Number (sessionStorage.getItem('timeOfFirstDrink'));
+        timeUntilSober = Promille.TimeUntilSober(consumed, localStorage.getItem('bodyWeight'), localStorage.getItem('gender'),Number (sessionStorage.getItem('timeOfFirstDrink')));
 
     $('#soberInHours').text(" " + TimeHelper.convertSecondsToHoursMinutesAndSeconds(timeUntilSober*60*60) );
 
@@ -265,7 +269,6 @@ $('#promille').live( 'pageinit',function(event){
 
 // JavaScript code for the main page
 	$('#main').live( 'pageinit',function(event){
-        alert("test");
 		//Initialize
         sessionStorage.setItem('alcoholConsumed',0);
         sessionStorage.setItem('promille', 0);
@@ -276,10 +279,11 @@ $('#promille').live( 'pageinit',function(event){
         localStorage.setItem('bodyWeight', 75);
     
         promille = Number  (sessionStorage.getItem('promille'));
+
+
+
 		// UPDATE BUTTON
 		$('#boozeButton').click(function() {
-            console.log("skjer det noe ");
-            alert("hei");
            sessionStorage.setItem('timeOfFirstDrink', new Date().getTime());
             $('#startedDrinking').text("Drinking started at: " + new Date().getDate()  + "/" + new Date().getMonth() + ": " + new Date().getHours()+":"+ new Date().getMinutes());
             $("#boozeButton").button('disable');

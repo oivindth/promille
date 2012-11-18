@@ -3,72 +3,45 @@
 	<head> 
 	<title>howdrunkamI</title> 
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="JQuery/jquery.mobile-1.1.0/jquery.mobile-1.1.0.min.css" />
-        <link rel="stylesheet" href="navbar.css" />
-        <script> // type="text/javascript" charset="utf-8" src="cordova-1.7.0.js"></script>
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
         <script src="JQuery/jquery-1.7.2.min.js"></script>
         <script src="JS/extras.js"> </script>
-        <script src="JQuery/jquery.mobile-1.1.0/jquery.mobile-1.1.0.min.js"></script>
-
-
-
-        <script type="text/javascript" charset="utf-8">
-
-            // Call onDeviceReady when PhoneGap is loaded.
-            function onLoad() {
-                document.addEventListener("deviceready", onDeviceReady, false);
-            }
-
-            // PhoneGap is loaded and it is now safe to call PhoneGap methods
-            function onDeviceReady() {
-                // Register the event listener
-                document.addEventListener("backbutton", onBackKeyDown, false);
-            }
-
-            // Handle the back button
-            function onBackKeyDown() {
-              
-                //navigator.app.exitApp();
-                
-					if($.mobile.activePage.is('#main')){
-						 $.mobile.changePage( "exitAppDialog.html", {role: "dialog"} );
-					}
-                else {
-                    navigator.app.backHistory()
-                }
-            }
-
-        </script>
+        <script src="JQuery/jquery.mobile-1.2.0.min.js"></script>
 
 
     </head>
-    <body onload="onLoad()">
+    <body>
 	<!-- Start of first page -->
 	<div data-role="page" id ="main">
 
 		<div data-role="header" data-id="header" data-position="fixed"   >
 			<h1>How Drunk am I</h1>
             <a href="info.html" data-icon="info" data-role="button" class="ui-btn-right">Info</a>
-            <div data-role="navbar"  data-grid="c" class="nav-glyphish-example">
+            <div data-role="navbar"  data-grid="b" class="">
                 <ul>
-                    <li><a href="main.html" id="beernavbar" data-icon="myapp-beer-white" class="ui-btn-active ui-state-persist">Drink</a></li>
-                    <li><a href="promille.html"  id="barnavbar" data-icon="myapp-bac" >BAC</a></li>
-                    <li><a href="planner.html" id="plannernavbar" data-icon="myapp-planner">Planner</a></li>
-                    <li><a href="profile.html" id="profilenavbar" data-icon="myapp-profile">Profile</a></li>
+                    <li><a href="main.html" id="beernavbar" class="ui-btn-active ui-state-persist">Drink</a></li>
+                    <li><a href="promille.html"  id="barnavbar"  >BAC</a></li>
+                    <li><a href="profile.html" id="profilenavbar" >Profile</a></li>
                 </ul>
             </div><!-- /navbar -->
 		</div><!-- /header -->
 
 		<div data-role="content">
 
-            <h3> Choose a drink</h3>
+            <h3> Promille</h3>
+
+            <h5 id="currentPromille"></h5>
+
 
             <ul data-role="listview" id="listview-main"  >
+
+
                 <li>
+
                      <a href="beerDialog.html" data-rel ="dialog" id="linktoBeerDialog" >
                          <img src="images/beer_bubbles.jpg" />
                     <h3>Beer</h3>
-                    <p>99 bottles of beer on the wall.....</p>
+                    <p>...</p>
                 </a></li>
                 <li><a href="wineDialog.html" data-rel ="dialog">
                     <img src="images/wine.jpg" />
